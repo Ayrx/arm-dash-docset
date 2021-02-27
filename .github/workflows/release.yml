@@ -1,0 +1,37 @@
+name: Upload to release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Upload to release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - run: |
+          python generate.py
+      - working-directory: ./output
+        run: |
+          zip -r Armv7-A.docset.zip Armv7-A.docset
+          zip -r Armv8-A.docset.zip Armv8-A.docset
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./output/Armv7-A.docset.zip
+          asset_name: Armv7-A.docset.zip
+          asset_content_type: application/octet-stream
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./output/Armv8-A.docset.zip
+          asset_name: Armv8-A.docset.zip
+          asset_content_type: application/octet-stream

@@ -19,6 +19,7 @@ def generate_docset(docset_name, path, search_key):
     document_dir.mkdir(parents=True)
 
     shutil.copytree(path, document_dir, dirs_exist_ok=True)
+    shutil.copy("icon.png", root_dir / "icon.png")
 
     (content_dir / "Info.plist").write_text(
         """
